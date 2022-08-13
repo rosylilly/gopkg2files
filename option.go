@@ -10,6 +10,7 @@ import (
 type Option struct {
 	Debug            bool
 	Goroot           bool
+	Gopkg            bool
 	Cgo              bool
 	Test             bool
 	XTest            bool
@@ -31,6 +32,7 @@ func (o *Option) FlagSet(name string) (*flag.FlagSet, error) {
 
 	flags.BoolVar(&o.Debug, "debug", false, "debug mode")
 	flags.BoolVar(&o.Goroot, "goroot", false, "list undered $GOROOT files")
+	flags.BoolVar(&o.Gopkg, "gopkg", false, "list under $GOPATH/src/github.com/ files")
 	flags.BoolVar(&o.Cgo, "cgo", false, "list cgo files")
 	flags.BoolVar(&o.Test, "test", false, "list test files")
 	flags.BoolVar(&o.XTest, "xtest", false, "list xtest files")

@@ -5,7 +5,9 @@ import (
 	"go/build"
 	"io"
 	"log"
+	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
@@ -121,6 +123,10 @@ func (r *Resolver) resolve(pkg *build.Package) error {
 		r.logger.Println("skip: $GOROOT")
 		return nil
 	}
+	if r.IsGomodPackage(pkg) && !r.option.Gopkg {
+		r.logger.Println("skip: go mod package")
+		return nil
+	}
 
 	r.filesMu.Lock()
 	goFiles := make([]string, len(pkg.GoFiles))
@@ -166,4 +172,20 @@ func (r *Resolver) resolve(pkg *build.Package) error {
 	}
 
 	return nil
+}
+
+func (r *Resolver) GOPATH() string {
+	gopath := os.Getenv("GOPATH")
+	if gopath == "" {
+		return r.build.GOPATH
+	}
+	return gopath
+}
+
+func (r *Resolver) GopkgRoot() string {
+	return filepath.Join(r.GOPATH(), "pkg", "mod")
+}
+
+func (r *Resolver) IsGomodPackage(pkg *build.Package) bool {
+	return strings.HasPrefix(pkg.Dir, r.GopkgRoot())
 }
