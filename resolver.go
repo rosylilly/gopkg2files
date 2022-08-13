@@ -150,5 +150,20 @@ func (r *Resolver) resolve(pkg *build.Package) error {
 			return err
 		}
 	}
+	if r.option.Test {
+		for _, imp := range pkg.TestImports {
+			if err := r.Resolve(imp); err != nil {
+				return err
+			}
+		}
+	}
+	if r.option.XTest {
+		for _, imp := range pkg.XTestImports {
+			if err := r.Resolve(imp); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }

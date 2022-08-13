@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"flag"
 	"fmt"
 	"os"
 
@@ -10,7 +12,9 @@ import (
 func main() {
 	option := gopkg2files.NewOption()
 	if err := option.Parse("gopkg2files", os.Args[1:]); err != nil {
-		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		if !errors.Is(err, flag.ErrHelp) {
+			fmt.Fprintf(os.Stderr, "%s\n", err.Error())
+		}
 		os.Exit(1)
 		return
 	}
